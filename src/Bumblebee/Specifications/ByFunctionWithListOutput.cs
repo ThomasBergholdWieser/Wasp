@@ -1,38 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 using OpenQA.Selenium;
 
-namespace Bumblebee.Specifications
+namespace Bumblebee.Specifications;
+
+public class ByFunctionWithListOutput : By
 {
-	public class ByFunctionWithListOutput : By
+	private readonly Func<ISearchContext, IEnumerable<IWebElement>> _function;
+
+	internal ByFunctionWithListOutput(Expression<Func<ISearchContext, IEnumerable<IWebElement>>> expression)
 	{
-		private readonly Func<ISearchContext, IEnumerable<IWebElement>> _function;
+		_function = expression.Compile();
+		Description = $"By.Function: {expression.Body}";
+	}
 
-		internal ByFunctionWithListOutput(Expression<Func<ISearchContext, IEnumerable<IWebElement>>> expression)
+	public override IWebElement FindElement(ISearchContext context)
+	{
+		var element = _function(context).FirstOrDefault();
+
+		if (element == null)
 		{
-			_function = expression.Compile();
-			Description = $"By.Function: {expression.Body}";
+			throw new NoSuchElementException();
 		}
 
-		public override IWebElement FindElement(ISearchContext context)
-		{
-			var element = _function(context).FirstOrDefault();
+		return element;
+	}
 
-			if (element == null)
-			{
-				throw new NoSuchElementException();
-			}
-
-			return element;
-		}
-
-		public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
-		{
-			return new ReadOnlyCollection<IWebElement>(_function(context).ToList());
-		}
+	public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
+	{
+		return new ReadOnlyCollection<IWebElement>(_function(context).ToList());
 	}
 }

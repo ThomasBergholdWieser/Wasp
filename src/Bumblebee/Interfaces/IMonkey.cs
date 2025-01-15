@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿namespace Bumblebee.Interfaces;
 
-namespace Bumblebee.Interfaces
+public interface IMonkey
 {
-	public interface IMonkey
-	{
-		void Invoke(IBlock block);
-		IList<string> Logs { get; }
-		void VerifyState();
-	}
+	void Invoke(IBlock block);
+	IList<string> Logs { get; }
+	void VerifyState();
 }

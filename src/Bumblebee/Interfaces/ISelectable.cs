@@ -1,7 +1,6 @@
-﻿namespace Bumblebee.Interfaces
+﻿namespace Bumblebee.Interfaces;
+
+public interface ISelectable
 {
-	public interface ISelectable
-	{
-		bool Selected { get; }
-	}
+	bool Selected { get; }
 }

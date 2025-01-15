@@ -1,6 +1,5 @@
-namespace Bumblebee.Interfaces
+namespace Bumblebee.Interfaces;
+
+public interface IPage : IBlock
 {
-	public interface IPage : IBlock
-	{
-	}
 }

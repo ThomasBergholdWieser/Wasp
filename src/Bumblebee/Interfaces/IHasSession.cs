@@ -1,9 +1,8 @@
 using Bumblebee.Setup;
 
-namespace Bumblebee.Interfaces
+namespace Bumblebee.Interfaces;
+
+public interface IHasSession
 {
-	public interface IHasSession
-	{
-		Session Session { get; }
-	}
+	Session Session { get; }
 }

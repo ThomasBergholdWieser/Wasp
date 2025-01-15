@@ -1,7 +1,6 @@
-﻿namespace Bumblebee.Interfaces
+﻿namespace Bumblebee.Interfaces;
+
+public interface IDraggable : IHasBackingElement
 {
-	public interface IDraggable : IHasBackingElement
-	{
-		IPerformsDragAndDrop GetDragAndDropPerformer();
-	}
+	IPerformsDragAndDrop GetDragAndDropPerformer();
 }

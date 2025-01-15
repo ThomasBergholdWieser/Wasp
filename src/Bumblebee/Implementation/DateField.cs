@@ -1,71 +1,68 @@
-﻿using System;
-
-using Bumblebee.Extensions;
+﻿using Bumblebee.Extensions;
 using Bumblebee.Interfaces;
 
 using OpenQA.Selenium;
 
-namespace Bumblebee.Implementation
+namespace Bumblebee.Implementation;
+
+public class DateField : TextField, IDateField
 {
-	public class DateField : TextField, IDateField
+	public DateField(IBlock parent, By @by) : base(parent, @by)
 	{
-		public DateField(IBlock parent, By @by) : base(parent, @by)
-		{
-		}
-
-		public virtual TResult EnterDate<TResult>(DateTime date) where TResult : IBlock
-		{
-			var executor = (IJavaScriptExecutor) Session.Driver;
-
-			executor.ExecuteScript($"arguments[0].value = '{date:yyyy-MM-dd}';", Tag);
-
-			executor.ExecuteScript($"arguments[0].value = '{date:yyyy-MM-dd}';", Tag);
-
-			return this.FindRelated<TResult>();
-		}
-
-		public virtual DateTime? Value
-		{
-			get
-			{
-				DateTime? result = null;
-
-				DateTime date;
-				if ((Text != null) && DateTime.TryParse(Text, out date))
-				{
-					result = date;
-				}
-
-				return result;
-			}
-		}
 	}
 
-	public class DateField<TResult> : DateField, IDateField<TResult>
-		where TResult : IBlock
+	public virtual TResult EnterDate<TResult>(DateTime date) where TResult : IBlock
 	{
-		public DateField(IBlock parent, By @by) : base(parent, @by)
-		{
-		}
+		var executor = (IJavaScriptExecutor) Session.Driver;
 
-		public virtual TResult EnterDate(DateTime date)
-		{
-			return EnterDate<TResult>(date);
-		}
+		executor.ExecuteScript($"arguments[0].value = '{date:yyyy-MM-dd}';", Tag);
 
-		public TResult Press(Key key)
-		{
-			return Press<TResult>(key);
-		}
+		executor.ExecuteScript($"arguments[0].value = '{date:yyyy-MM-dd}';", Tag);
 
-		public virtual TResult EnterText(string text)
-		{
-			return EnterText<TResult>(text);
-		}
+		return this.FindRelated<TResult>();
+	}
 
-		public virtual TResult AppendText(string text)
+	public virtual DateTime? Value
+	{
+		get
 		{
-			return AppendText<TResult>(text);
+			DateTime? result = null;
+
+			DateTime date;
+			if (Text != null && DateTime.TryParse(Text, out date))
+			{
+				result = date;
+			}
+
+			return result;
 		}
+	}
+}
+
+public class DateField<TResult> : DateField, IDateField<TResult>
+	where TResult : IBlock
+{
+	public DateField(IBlock parent, By @by) : base(parent, @by)
+	{
+	}
+
+	public virtual TResult EnterDate(DateTime date)
+	{
+		return EnterDate<TResult>(date);
+	}
+
+	public TResult Press(Key key)
+	{
+		return Press<TResult>(key);
+	}
+
+	public virtual TResult EnterText(string text)
+	{
+		return EnterText<TResult>(text);
+	}
+
+	public virtual TResult AppendText(string text)
+	{
+		return AppendText<TResult>(text);
 	}
 }

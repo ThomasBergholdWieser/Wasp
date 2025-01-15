@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
+﻿namespace Bumblebee.Interfaces;
 
-namespace Bumblebee.Interfaces
+public interface ITableRow : IEnumerable<string>
 {
-	public interface ITableRow : IEnumerable<string>
-	{
-		string this[int index] { get; }
-		string this[string column] { get; }
-	}
+	string this[int index] { get; }
+	string this[string column] { get; }
 }

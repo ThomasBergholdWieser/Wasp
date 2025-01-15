@@ -1,17 +1,14 @@
-﻿using System;
+﻿using OpenQA.Selenium.Chrome;
 
-using OpenQA.Selenium.Chrome;
+namespace Bumblebee.Setup.DriverEnvironments;
 
-namespace Bumblebee.Setup.DriverEnvironments
+public class Chrome : SimpleDriverEnvironment<ChromeDriver>
 {
-	public class Chrome : SimpleDriverEnvironment<ChromeDriver>
+	public Chrome()
 	{
-		public Chrome()
-		{
-		}
+	}
 
-		public Chrome(TimeSpan timeToWait) : base(timeToWait)
-		{
-		}
+	public Chrome(TimeSpan timeToWait) : base(timeToWait)
+	{
 	}
 }

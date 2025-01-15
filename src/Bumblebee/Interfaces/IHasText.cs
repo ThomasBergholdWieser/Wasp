@@ -1,7 +1,6 @@
-﻿namespace Bumblebee.Interfaces
+﻿namespace Bumblebee.Interfaces;
+
+public interface IHasText
 {
-	public interface IHasText
-	{
-		string Text { get; }
-	}
+	string Text { get; }
 }

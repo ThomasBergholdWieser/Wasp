@@ -1,33 +1,30 @@
-﻿using System;
+﻿using OpenQA.Selenium.Chrome;
 
-using OpenQA.Selenium.Chrome;
+namespace Bumblebee.Setup.DriverEnvironments;
 
-namespace Bumblebee.Setup.DriverEnvironments
+public class HeadlessChrome : SimpleDriverEnvironment<HeadlessChromeDriver>
 {
-	public class HeadlessChrome : SimpleDriverEnvironment<HeadlessChromeDriver>
+	public HeadlessChrome()
 	{
-		public HeadlessChrome()
-		{
-		}
-
-		public HeadlessChrome(TimeSpan timeToWait) : base(timeToWait)
-		{
-		}
 	}
 
-	public class HeadlessChromeDriver : ChromeDriver
-    {
-		public HeadlessChromeDriver() : base(GetInitialOptions())
-		{ }
+	public HeadlessChrome(TimeSpan timeToWait) : base(timeToWait)
+	{
+	}
+}
 
-		private static ChromeOptions GetInitialOptions()
-		{
-			var options = new ChromeOptions();
-			options.AddArgument("--headless");
-			options.AddArgument("--disable-gpu");
-			options.AddArgument("--no-sandbox");
+public class HeadlessChromeDriver : ChromeDriver
+{
+	public HeadlessChromeDriver() : base(GetInitialOptions())
+	{ }
 
-			return options;
-		}
-    }
+	private static ChromeOptions GetInitialOptions()
+	{
+		var options = new ChromeOptions();
+		options.AddArgument("--headless");
+		options.AddArgument("--disable-gpu");
+		options.AddArgument("--no-sandbox");
+
+		return options;
+	}
 }

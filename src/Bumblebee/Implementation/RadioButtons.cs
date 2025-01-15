@@ -1,34 +1,30 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using Bumblebee.Interfaces;
+﻿using Bumblebee.Interfaces;
 using Bumblebee.Specifications;
 
 using OpenQA.Selenium;
 
-namespace Bumblebee.Implementation
+namespace Bumblebee.Implementation;
+
+public class RadioButtons<TResult> : IRadioButtons<TResult>
+	where TResult : IBlock
 {
-	public class RadioButtons<TResult> : IRadioButtons<TResult>
-		where TResult : IBlock
+	protected static readonly ISpecification By = new Specification();
+
+	private readonly IBlock _parent;
+	private readonly By _by;
+
+	public RadioButtons(IBlock parent, By @by)
 	{
-		protected static readonly ISpecification By = new Specification();
+		_parent = parent;
+		_by = @by;
+	}
 
-		private readonly IBlock _parent;
-		private readonly By _by;
-
-		public RadioButtons(IBlock parent, By @by)
+	public virtual IEnumerable<IOption<TResult>> Options
+	{
+		get
 		{
-			_parent = parent;
-			_by = @by;
-		}
-
-		public virtual IEnumerable<IOption<TResult>> Options
-		{
-			get
-			{
-				return new Elements<RadioButton<TResult>>(_parent, _by)
-					.Where(option => option.Tag.Displayed);
-			}
+			return new Elements<RadioButton<TResult>>(_parent, _by)
+				.Where(option => option.Tag.Displayed);
 		}
 	}
 }

@@ -1,7 +1,6 @@
-namespace Bumblebee.Interfaces
+namespace Bumblebee.Interfaces;
+
+public interface IHasParent
 {
-	public interface IHasParent
-	{
-		IBlock Parent { get; }
-	}
+	IBlock Parent { get; }
 }

@@ -1,86 +1,81 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 using OpenQA.Selenium;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.Extensions;
 
-namespace Bumblebee.JQuery
+namespace Bumblebee.JQuery;
+
+internal class ByJQuery : By
 {
-	internal class ByJQuery : By
+	private static readonly Type WebDriverType = typeof (IWebDriver);
+	private static readonly Type WebElementType = typeof (IWebElement);
+
+	private readonly string _selector;
+
+	public ByJQuery(string selector)
 	{
-		private static readonly Type WebDriverType = typeof (IWebDriver);
-		private static readonly Type WebElementType = typeof (IWebElement);
-
-		private readonly string _selector;
-
-		public ByJQuery(string selector)
+		if (String.IsNullOrWhiteSpace(selector))
 		{
-			if (String.IsNullOrWhiteSpace(selector))
-			{
-				throw new ArgumentNullException(nameof (selector));
-			}
-
-			_selector = selector;
+			throw new ArgumentNullException(nameof (selector));
 		}
 
-		public override IWebElement FindElement(ISearchContext context)
+		_selector = selector;
+	}
+
+	public override IWebElement FindElement(ISearchContext context)
+	{
+		var elements = FindElements(context);
+
+		if (elements.Any() == false)
 		{
-			var elements = FindElements(context);
-
-			if (elements.Any() == false)
-			{
-				throw new NoSuchElementException($"Unable to find element matching selector: '{_selector}'");
-			}
-
-			return elements.First();
+			throw new NoSuchElementException($"Unable to find element matching selector: '{_selector}'");
 		}
 
-		public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
+		return elements.First();
+	}
+
+	public override ReadOnlyCollection<IWebElement> FindElements(ISearchContext context)
+	{
+		var result = Enumerable.Empty<IWebElement>();
+
+		if (WebDriverType.IsInstanceOfType(context))
 		{
-			var result = Enumerable.Empty<IWebElement>();
-
-			if (WebDriverType.IsInstanceOfType(context))
-			{
-				result = FindElements((IWebDriver) context);
-			}
-			else if (WebElementType.IsInstanceOfType(context))
-			{
-				result = FindElements((IWebElement) context);
-			}
-
-			return new ReadOnlyCollection<IWebElement>(result.ToList());
+			result = FindElements((IWebDriver) context);
+		}
+		else if (WebElementType.IsInstanceOfType(context))
+		{
+			result = FindElements((IWebElement) context);
 		}
 
-		private IEnumerable<IWebElement> FindElements(IWebDriver driver)
+		return new ReadOnlyCollection<IWebElement>(result.ToList());
+	}
+
+	private IEnumerable<IWebElement> FindElements(IWebDriver driver)
+	{
+		return driver.ExecuteJavaScript<IEnumerable>("return $(arguments[0]).get();", _selector)
+			.Cast<IWebElement>();
+	}
+
+	private IEnumerable<IWebElement> FindElements(IWebElement element)
+	{
+		IEnumerable<IWebElement> result = Enumerable.Empty<IWebElement>();
+
+		var wrapper = element as IWrapsDriver;
+
+		if (wrapper != null)
 		{
-			return driver.ExecuteJavaScript<IEnumerable>("return $(arguments[0]).get();", _selector)
+			var driver = wrapper.WrappedDriver;
+
+			result = driver.ExecuteJavaScript<IEnumerable>("return $(arguments[0]).find(arguments[1]).get();", element, _selector)
 				.Cast<IWebElement>();
 		}
 
-		private IEnumerable<IWebElement> FindElements(IWebElement element)
-		{
-			IEnumerable<IWebElement> result = Enumerable.Empty<IWebElement>();
+		return result;
+	}
 
-			var wrapper = element as IWrapsDriver;
-
-			if (wrapper != null)
-			{
-				var driver = wrapper.WrappedDriver;
-
-				result = driver.ExecuteJavaScript<IEnumerable>("return $(arguments[0]).find(arguments[1]).get();", element, _selector)
-					.Cast<IWebElement>();
-			}
-
-			return result;
-		}
-
-		public override string ToString()
-		{
-			return $"By.JQuery {_selector}";
-		}
+	public override string ToString()
+	{
+		return $"By.JQuery {_selector}";
 	}
 }

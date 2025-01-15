@@ -1,7 +1,6 @@
-﻿namespace Bumblebee.Interfaces
+﻿namespace Bumblebee.Interfaces;
+
+public interface IMonkeyable
 {
-	public interface IMonkeyable
-	{
-		void VerifyMonkeyState();
-	}
+	void VerifyMonkeyState();
 }

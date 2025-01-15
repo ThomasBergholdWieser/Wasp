@@ -3,34 +3,33 @@ using Bumblebee.Interfaces;
 
 using OpenQA.Selenium;
 
-namespace Bumblebee.Implementation
+namespace Bumblebee.Implementation;
+
+public class Option : Element, IOption
 {
-	public class Option : Element, IOption
+	public Option(IBlock parent, By by) : base(parent, @by)
 	{
-		public Option(IBlock parent, By by) : base(parent, @by)
-		{
-		}
-
-		public virtual TResult Click<TResult>() where TResult : IBlock
-		{
-			Parent.Tag.Click();
-
-			Tag.Click();
-
-			return this.FindRelated<TResult>();
-		}
 	}
 
-	public class Option<TResult> : Option, IOption<TResult>
-		where TResult : IBlock
+	public virtual TResult Click<TResult>() where TResult : IBlock
 	{
-		public Option(IBlock parent, By by) : base(parent, @by)
-		{
-		}
+		Parent.Tag.Click();
 
-		public virtual TResult Click()
-		{
-			return Click<TResult>();
-		}
+		Tag.Click();
+
+		return this.FindRelated<TResult>();
+	}
+}
+
+public class Option<TResult> : Option, IOption<TResult>
+	where TResult : IBlock
+{
+	public Option(IBlock parent, By by) : base(parent, @by)
+	{
+	}
+
+	public virtual TResult Click()
+	{
+		return Click<TResult>();
 	}
 }
